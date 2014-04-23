@@ -16,7 +16,7 @@ def check_burrow_location_consistency(filename):
 
 	# prepare a cursor object using cursor() method
 	cursor = db.cursor()
-	query = """ select UTM_Easting, UTM_Northing, burrow_number from """ + filename + """ where burrow_number is not null and burrow_number !="";"""
+	query = """ select UTM_Easting, UTM_Northing, burrow_number from """ + filename + """ where burrow_number >"" and UTM_Easting > "" and UTM_northing> "";"""
 	# execute SQL query using execute() method.
 	cursor.execute(query)
 	# Fetch all the rows in a list of lists.
@@ -103,7 +103,8 @@ def remove_whitespace(filename):
 if __name__ == "__main__":
 # This is the main function, where all the tasks get created
 
-	files = ["BSV_aggregate", "CS_aggregate", "FI_aggregate","HW_aggregate","LM_aggregate", "MC_aggregate", "PV_aggregate", "SG_aggregate", "SL_aggregate"]
+	#files = ["BSV_aggregate", "CS_aggregate", "FI_aggregate","HW_aggregate","LM_aggregate", "MC_aggregate", "PV_aggregate", "SG_aggregate", "SL_aggregate"]
+	files = ["SG_aggregate"]
 
 	for filename in files:
 		#connect to the database
