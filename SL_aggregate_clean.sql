@@ -36,13 +36,13 @@ CREATE TABLE `SL_aggregate` (
   `Behavior` varchar(20) DEFAULT NULL,
   `Tort_condition` varchar(20) DEFAULT NULL,
   `Elevation` int(10) DEFAULT NULL,
-  `Habitat` varchar(30) DEFAULT NULL,
+  `habitat` varchar(100) DEFAULT NULL,
   `Julian` int(3) DEFAULT NULL,
   `Notes` varchar(254) DEFAULT NULL,
   `Plot` varchar(20) DEFAULT NULL,
   `Radio` varchar(20) DEFAULT NULL,
   `Radio_Frequency` float(10,3) DEFAULT NULL,
-  `Soil` varchar(20) DEFAULT NULL,
+  `soil` varchar(100) DEFAULT NULL,
   `Weather` varchar(30) DEFAULT NULL,
   PRIMARY KEY (`observations`)
 ) ENGINE=InnoDB AUTO_INCREMENT=776 DEFAULT CHARSET=latin1;
@@ -67,4 +67,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-05-27 18:17:52
+-- Dump completed on 2014-06-09 16:42:47
