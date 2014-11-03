@@ -19,15 +19,40 @@ def add_tort_status_column (filename):
 
 ######################################################################################
 def update_BSV_tort_status():
-	"""for BSV translocation happened on 1997-04-09. So all the "T" torts will be marked "E" on/after 1998-04-09"""
+	"""for BSV translocation happened on 1997-04-09. So all the "T" torts will be marked "E" on/after 1998-04-09.
+	UPDATE:3Nov2014: All the translocations did not happen on the same date. Now 1st Translocation date = """
+	
 	
 	db = sql.connect("localhost","root","bio123456","burrow_data" )
 	cursor = db.cursor()
-	extrans = '1998-04-09'
-	#cursor.execute( """ UPDATE BSV_aggregate SET Tortoise_status = 'E' where Tortoise_status ="T" and date > %s;""", (extrans))
-	cursor.execute( """ UPDATE BSV_aggregate SET Tortoise_status = 'ER' where Tortoise_status ="R" and date > %s;""", (extrans))
+	cursor.execute( """ UPDATE BSV_aggregate SET Tortoise_status = 'T' where tortoise_status = "ET"; """)
+	cursor = db.cursor()
+	cursor.execute( """ UPDATE BSV_aggregate SET Tortoise_status = 'R' where tortoise_status = "ER"; """)
+	db.commit()
+	
+	mindate={}
+	## note I am adding 1 year to the translocation dates so the dicut is actually storing the mindate for "T" to be relabeled as "E"
+	cursor = db.cursor()
+	cursor.execute( """ select tortoise_number, date_add(min(date), interval 1 year) from BSV_aggregate where tortoise_status="T" group by tortoise_number; """)
+	results = cursor.fetchall()
+	for row in results:
+		mindate[row[0]] = row[1]
+	
+	for tort in mindate.keys():
+		cursor = db.cursor()
+		cursor.execute( """ UPDATE BSV_aggregate SET Tortoise_status = 'ET' where Tortoise_number = %s and tortoise_status = "T" and date > %s; """,(tort, mindate[tort]))
+		
+	db.commit()
+	
+	### update 10/29/2014: choosing a median date for all the "R" torts to become "ER"
+	datelist = list(sorted(set((mindate.values()))))
+	convert_r_date =  datelist[int(round(0.5*len(datelist)))]
+	cursor = db.cursor()
+	cursor.execute( """ UPDATE BSV_aggregate SET Tortoise_status = 'ER' where Tortoise_status = "R" and date > %s; """,(convert_r_date))
 	db.commit()
 	db.close()
+	
+	
 	
 
 ######################################################################################
@@ -116,4 +141,4 @@ if __name__ == "__main__":
 		###updating "E" to ET to accomodate "ER" 
 		#cursor = db.cursor()
 		#cursor.execute( """ UPDATE """ +filename + """ SET Tortoise_status = 'ET' where Tortoise_status = 'E'; """)
-	update_LM_tort_status()
+	update_BSV_tort_status()
