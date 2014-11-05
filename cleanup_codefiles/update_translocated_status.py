@@ -107,26 +107,27 @@ def update_SG_tort_status():
 ######################################################################################
 def update_FI_tort_status():
 	
+	
 	db = sql.connect("localhost","root","bio123456","burrow_data" )
 	mindate={}
-	## note I am adding 1 year to the translocation dates so the dicut is actually storing the mindate for "T" to be relabeled as "E"
+	### update 11/05/2014: T->ET after 2009-03-27 
 	cursor = db.cursor()
-	cursor.execute( """ select tortoise_number, date_add(min(date), interval 1 year) from FI_aggregate where tortoise_status="T" group by tortoise_number; """)
-	results = cursor.fetchall()
-	for row in results:
-		mindate[row[0]] = row[1]
-	
-	#for tort in mindate.keys():
-	#	cursor = db.cursor()
-	#	cursor.execute( """ UPDATE FI_aggregate SET Tortoise_status = 'E' where Tortoise_number = %s and tortoise_status = "T" and date > %s; """,(tort, mindate[tort]))
+	cursor.execute( """ UPDATE FI_aggregate SET Tortoise_status = 'ET' where tortoise_status = "T" and date > '2009-03-27'; """)
 		
 	#db.commit()
 	
-	### update 10/29/2014: choosing a median date for all the "R" torts to become "ER"
-	datelist = list(sorted(set((mindate.values()))))
-	convert_r_date =  datelist[int(round(0.5*len(datelist)))]
+	
+	### update 11/05/2014: R-->ER after 1 year of being labelled as "R" 
+	
 	cursor = db.cursor()
-	cursor.execute( """ UPDATE FI_aggregate SET Tortoise_status = 'ER' where Tortoise_status = "R" and date > %s; """,(convert_r_date))
+	cursor.execute( """ select tortoise_number, date_add(min(date), interval 1 year) from FI_aggregate where tortoise_status="R" group by tortoise_number; """)
+	results = cursor.fetchall()
+	for row in results:
+		mindate[row[0]] = row[1]
+		
+	for tort in mindate.keys():	
+		cursor = db.cursor()
+		cursor.execute( """ UPDATE FI_aggregate SET Tortoise_status = 'ER' where Tortoise_number= %s and date= %s; """,(tort, mindate[tort]))
 	db.commit()
 	db.close()
 	
@@ -141,4 +142,4 @@ if __name__ == "__main__":
 		###updating "E" to ET to accomodate "ER" 
 		#cursor = db.cursor()
 		#cursor.execute( """ UPDATE """ +filename + """ SET Tortoise_status = 'ET' where Tortoise_status = 'E'; """)
-	update_BSV_tort_status()
+	update_FI_tort_status()
