@@ -1,0 +1,10 @@
+mysqldump -u root -p --skip-extended-insert burrow_data > burrow_data_clean.sql
+mysqldump -u root -p burrow_data BSV_aggregate > BSV_aggregate_clean.sql
+mysqldump -u root -p burrow_data CS_aggregate > CS_aggregate_clean.sql
+mysqldump -u root -p burrow_data FI_aggregate > FI_aggregate_clean.sql
+mysqldump -u root -p burrow_data HW_aggregate > HW_aggregate_clean.sql
+mysqldump -u root -p burrow_data LM_aggregate > LM_aggregate_clean.sql
+mysqldump -u root -p burrow_data MC_aggregate > MC_aggregate_clean.sql
+mysqldump -u root -p burrow_data PV_aggregate > PV_aggregate_clean.sql
+mysqldump -u root -p burrow_data SG_aggregate > SG_aggregate_clean.sql
+mysqldump -u root -p burrow_data SL_aggregate > SL_aggregate_clean.sql
